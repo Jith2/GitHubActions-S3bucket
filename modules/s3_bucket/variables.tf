@@ -13,8 +13,3 @@ variable "tags" {
   type        = map(string)
   default     = {}
 }
-variable "bucket_policy" {
-  description = "Optional bucket policy JSON to attach to the bucket"
-  type        = string
-  default     = null
-}
