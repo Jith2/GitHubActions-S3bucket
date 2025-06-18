@@ -49,38 +49,3 @@ resource "aws_s3_bucket_lifecycle_configuration" "expire_objects" {
     }
   }
 }
-resource "aws_s3_bucket_policy" "this" {
-  count  = var.bucket_policy != null ? 1 : 0
-  bucket = aws_s3_bucket.this.id
-  policy = var.bucket_policy
-}
-
-module "customer_buckets" {
-  source      = "./modules/s3_bucket"
-  for_each    = var.customer_buckets
-  bucket_name = each.key
-  subfolders  = each.value
-  tags        = var.tags
-
-  bucket_policy = each.key == "om-campaign-bbbsdv" ? jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Effect = "Allow"
-        Principal = {
-          AWS = "arn:aws:iam::985539774989:user/tu-om-campaign-bbbsdv"
-        }
-        Action = [
-          "s3:GetObject",
-          "s3:PutObject",
-          "s3:DeleteObject",
-          "s3:ListBucket"
-        ]
-        Resource = [
-          "arn:aws:s3:::om-campaign-bbbsdv",
-          "arn:aws:s3:::om-campaign-bbbsdv/*"
-        ]
-      }
-    ]
-  }) : null
-}
